@@ -49,26 +49,48 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Image Generator'),
+        title: const Text('Isthihaaru',
+            style: const TextStyle(color: Colors.white)),
+        backgroundColor: Colors.blue,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: () async {
                 await _requestPermission(Permission.camera);
                 _pickImage(context, ImageSource.camera);
               },
-              child: const Text('Capture Image'),
+              icon: const Icon(Icons.camera_alt, color: Colors.white),
+              label: const Text('Capture Image',
+                  style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: () async {
                 await _requestPermission(Permission.storage);
                 _pickImage(context, ImageSource.gallery);
               },
-              child: const Text('Choose Image'),
+              icon: const Icon(Icons.photo_library, color: Colors.white),
+              label: const Text('Choose Image',
+                  style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orangeAccent,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
             ),
           ],
         ),

@@ -7,6 +7,7 @@ class CustomEditableText {
   Color color;
   double fontSize;
   double rotation;
+  String fontFamily;
 
   CustomEditableText({
     required this.text,
@@ -14,6 +15,7 @@ class CustomEditableText {
     required this.color,
     required this.fontSize,
     required this.rotation,
+    this.fontFamily = 'MVAWaheed',
   });
 }
 
@@ -43,6 +45,8 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
   Offset _lastFocalPoint = Offset.zero;
   final double _minTouchAreaPadding = 20.0;
   bool _isDragging = false;
+  static const double _snapAngle = math.pi / 2; // 90 degrees in radians
+  static const double _snapThreshold = math.pi / 36; // 5 degrees in radians
 
   @override
   void initState() {
@@ -69,6 +73,19 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
   void _updateText() {
     widget.onUpdate(_text);
     _updateTextSize();
+  }
+
+  double _softSnapRotation(double rotation) {
+    double normalizedRotation = rotation % (2 * math.pi);
+    if (normalizedRotation < 0) normalizedRotation += 2 * math.pi;
+
+    for (int i = 0; i < 4; i++) {
+      double target = i * _snapAngle;
+      if ((normalizedRotation - target).abs() < _snapThreshold) {
+        return target;
+      }
+    }
+    return normalizedRotation;
   }
 
   @override
@@ -120,7 +137,9 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
               );
 
               _text.fontSize = newFontSize;
-              _text.rotation = _baseRotation + details.rotation;
+              // Apply soft snap to rotation
+              _text.rotation =
+                  _softSnapRotation(_baseRotation + details.rotation);
             }
             _lastFocalPoint = details.focalPoint;
             _updateText();
@@ -136,18 +155,19 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
               horizontal: horizontalPadding,
               vertical: 0,
             ),
-            // decoration: BoxDecoration(
-            //   border: widget.isActive
-            //       ? Border.all(color: Colors.blue, width: 2)
-            //       : null,
-            // ),
+            decoration: BoxDecoration(
+              border: widget.isActive
+                  ? Border.all(color: Colors.blue, width: 2)
+                  : Border.all(color: Colors.transparent, width: 2),
+              borderRadius: BorderRadius.circular(4),
+            ),
             child: Text(
               _text.text,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: _text.color,
                 fontSize: _text.fontSize,
-                fontFamily: 'MVAWaheed',
+                fontFamily: _text.fontFamily,
               ),
             ),
           ),
