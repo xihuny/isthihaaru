@@ -92,196 +92,63 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
   void _showEditDialog(int? index) {
     final textController =
         TextEditingController(text: index != null ? texts[index].text : '');
-    Color currentColor = index != null ? texts[index].color : Colors.white;
-    bool showColorPicker = false;
-    String currentFont = index != null ? texts[index].fontFamily : 'MVAWaheed';
-
-    void _showFontSelectionDialog() {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title:
-                Text('ފޮންޓް ހޮވާ', style: TextStyle(fontFamily: 'MVAWaheed')),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  title: Text('MVAWaheed',
-                      style: TextStyle(fontFamily: 'MVAWaheed')),
-                  onTap: () {
-                    Navigator.of(context).pop('MVAWaheed');
-                  },
-                ),
-                ListTile(
-                  title: Text('Arial', style: TextStyle(fontFamily: 'Arial')),
-                  onTap: () {
-                    Navigator.of(context).pop('Arial');
-                  },
-                ),
-                // Add more font options here
-              ],
-            ),
-          );
-        },
-      ).then((selectedFont) {
-        if (selectedFont != null) {
-          setState(() {
-            currentFont = selectedFont;
-          });
-        }
-      });
-    }
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (!showColorPicker) ...[
-                      Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        child: TextField(
-                          controller: textController,
-                          autofocus: true,
-                          style: const TextStyle(
-                              fontFamily: 'MVAWaheed', fontSize: 20),
-                          textAlign: TextAlign.center,
-                          textDirection: TextDirection.rtl,
-                          textAlignVertical: TextAlignVertical.center,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                showColorPicker = true;
-                              });
-                            },
-                            child: Container(
-                              width: 24,
-                              height: 24,
-                              decoration: BoxDecoration(
-                                color: currentColor,
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.grey),
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.font_download),
-                            onPressed: _showFontSelectionDialog,
-                          ),
-                        ],
-                      ),
-                    ] else ...[
-                      const Text('ކުލަ ހޮވާ',
-                          style:
-                              TextStyle(fontFamily: 'MVAWaheed', fontSize: 18)),
-                      const SizedBox(height: 20),
-                      ColorPicker(
-                        pickerColor: currentColor,
-                        onColorChanged: (color) {
-                          setState(() {
-                            currentColor = color;
-                          });
-                        },
-                        enableAlpha: true,
-                        displayThumbColor: true,
-                        paletteType: PaletteType.hsvWithHue,
-                        pickerAreaHeightPercent: 0.8,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (!showColorPicker)
-                        SizedBox(
-                          width: double.infinity,
-                          child: TextButton(
-                            onPressed: () {
-                              final newText = textController.text.trim();
-                              if (newText.isNotEmpty) {
-                                this.setState(() {
-                                  if (index == null) {
-                                    // Adding new text
-                                    texts.add(CustomEditableText(
-                                      text: newText,
-                                      position: const Offset(100, 100),
-                                      color: currentColor,
-                                      fontSize: 30,
-                                      rotation: 0,
-                                    ));
-                                    activeTextIndex = texts.length - 1;
-                                  } else {
-                                    // Updating existing text
-                                    texts[index].text = newText;
-                                    texts[index].color = currentColor;
-                                  }
-                                });
-                              }
-                              Navigator.of(context).pop();
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: Color(
-                                  0xFF90A4AE), // Soft blue-grey, slightly darker
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 12),
-                            ),
-                            child: const Text('ރަނގަޅު',
-                                style: TextStyle(fontFamily: 'MVAWaheed')),
-                          ),
-                        ),
-                      SizedBox(height: 4), // Add some space between buttons
-                      SizedBox(
-                        width: double.infinity,
-                        child: TextButton(
-                          onPressed: () {
-                            if (showColorPicker) {
-                              setState(() {
-                                showColorPicker = false;
-                              });
-                            } else {
-                              Navigator.of(context).pop();
-                            }
-                          },
-                          style: TextButton.styleFrom(
-                            backgroundColor:
-                                Color(0xFFB0BEC5), // Soft blue-grey
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 12),
-                          ),
-                          child: Text(
-                            showColorPicker ? 'ނިންމާ' : 'ކެންސަލް',
-                            style: TextStyle(fontFamily: 'MVAWaheed'),
-                          ),
-                        ),
-                      ),
-                    ],
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  child: TextField(
+                    controller: textController,
+                    autofocus: true,
+                    style:
+                        const TextStyle(fontFamily: 'MVAWaheed', fontSize: 20),
+                    textAlign: TextAlign.center,
+                    textDirection: TextDirection.rtl,
+                    textAlignVertical: TextAlignVertical.center,
+                    decoration: const InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
               ],
-            );
-          },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                final newText = textController.text.trim();
+                if (newText.isNotEmpty) {
+                  setState(() {
+                    if (index == null) {
+                      // Adding new text
+                      texts.add(CustomEditableText(
+                        text: newText,
+                        position: const Offset(100, 100),
+                        color: Colors.white,
+                        fontSize: 30,
+                        rotation: 0,
+                      ));
+                      activeTextIndex = texts.length - 1;
+                    } else {
+                      // Updating existing text
+                      texts[index].text = newText;
+                    }
+                  });
+                }
+                Navigator.of(context).pop();
+              },
+              child: const Text('ރަނގަޅު',
+                  style: TextStyle(fontFamily: 'MVAWaheed')),
+            ),
+          ],
         );
       },
     );
@@ -304,6 +171,98 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
         activeTextIndex = null;
       });
     }
+  }
+
+  void _changeTextColor() {
+    if (activeTextIndex != null) {
+      _showColorPickerDialog(activeTextIndex!);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a text first')),
+      );
+    }
+  }
+
+  void _changeTextFont() {
+    if (activeTextIndex != null) {
+      _showFontSelectionDialog(activeTextIndex!);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a text first')),
+      );
+    }
+  }
+
+  void _showColorPickerDialog(int index) {
+    Color currentColor = texts[index].color;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('ކުލަ ހޮވާ',
+              style: TextStyle(fontFamily: 'MVAWaheed')),
+          content: SingleChildScrollView(
+            child: ColorPicker(
+              pickerColor: currentColor,
+              onColorChanged: (color) {
+                setState(() {
+                  texts[index].color = color;
+                });
+              },
+              enableAlpha: true,
+              displayThumbColor: true,
+              paletteType: PaletteType.hsvWithHue,
+              pickerAreaHeightPercent: 0.8,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('ނިންމާ',
+                  style: TextStyle(fontFamily: 'MVAWaheed')),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showFontSelectionDialog(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('ފޮންޓް ހޮވާ',
+              style: TextStyle(fontFamily: 'MVAWaheed')),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text('MVAWaheed',
+                    style: TextStyle(fontFamily: 'MVAWaheed')),
+                onTap: () {
+                  setState(() {
+                    texts[index].fontFamily = 'MVAWaheed';
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                title:
+                    const Text('Arial', style: TextStyle(fontFamily: 'Arial')),
+                onTap: () {
+                  setState(() {
+                    texts[index].fontFamily = 'Arial';
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+              // Add more font options here
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -358,11 +317,58 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        onPressed: _addText,
-        child: const Icon(Icons.add, color: Colors.white),
+      floatingActionButton: Container(
+        margin: const EdgeInsets.only(bottom: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildCircleButton(
+              icon: Icons.color_lens,
+              label: 'ކުލަ',
+              onPressed: _changeTextColor,
+            ),
+            const SizedBox(width: 16),
+            _buildCircleButton(
+              icon: Icons.font_download,
+              label: 'ފޮންޓް',
+              onPressed: _changeTextFont,
+            ),
+            const SizedBox(width: 16),
+            _buildCircleButton(
+              icon: Icons.add,
+              label: 'ލިޔުން',
+              onPressed: _addText,
+            ),
+          ],
+        ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+
+  Widget _buildCircleButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        FloatingActionButton(
+          backgroundColor: Colors.blue,
+          onPressed: onPressed,
+          child: Icon(icon, color: Colors.white),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          label,
+          style: const TextStyle(
+            fontFamily: 'MVAWaheed',
+            fontSize: 20,
+            color: Colors.blue,
+          ),
+        ),
+      ],
     );
   }
 }
