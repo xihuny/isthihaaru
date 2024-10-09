@@ -92,12 +92,10 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
   Widget build(BuildContext context) {
     final horizontalPadding =
         math.max(_minTouchAreaPadding, _textSize.width * 0.2);
-    final verticalPadding =
-        math.max(_minTouchAreaPadding, _textSize.height * 0.5);
 
     return Positioned(
       left: _text.position.dx - horizontalPadding,
-      top: _text.position.dy - verticalPadding,
+      top: _text.position.dy,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTapDown: (_) => _isDragging = false,

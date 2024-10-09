@@ -20,6 +20,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
   List<CustomEditableText> texts = [];
   int? activeTextIndex;
   ScreenshotController screenshotController = ScreenshotController();
+  bool _isSaving = false;
 
   void _addText() {
     _showEditDialog(null);
@@ -208,17 +209,12 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
     );
   }
 
-  void _toggleActiveText(int index) {
-    setState(() {
-      activeTextIndex = (activeTextIndex == index) ? null : index;
-    });
-  }
-
   void _handleTextTap(int index) {
     _showEditDialog(index);
   }
 
   void _deleteSelectedText() {
+    debugPrint('delete');
     if (activeTextIndex != null) {
       setState(() {
         texts.removeAt(activeTextIndex!);
@@ -323,7 +319,6 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                   Navigator.of(context).pop();
                 },
               ),
-              // Add more font options here
             ],
           ),
         );
@@ -338,28 +333,21 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          centerTitle: true,
           title: const Text('ފޮޓޯ އެޑިޓް ކުރުން',
               style: TextStyle(color: Colors.white, fontFamily: 'MVAWaheed')),
           backgroundColor: Colors.blue,
           iconTheme: const IconThemeData(color: Colors.white),
           actions: [
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Row(
-                children: [
-                  if (activeTextIndex != null)
-                    IconButton(
-                      icon: const Icon(Icons.delete_outlined,
-                          color: Colors.white),
-                      onPressed: _deleteSelectedText,
-                    ),
-                  IconButton(
-                    icon: const Icon(Icons.save_alt, color: Colors.white),
-                    onPressed: _saveImage,
-                  ),
-                ],
+            if (activeTextIndex != null)
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: IconButton(
+                  icon: const Icon(Icons.delete_outline_rounded,
+                      color: Colors.white),
+                  onPressed: _deleteSelectedText,
+                ),
               ),
-            ),
           ],
         ),
         body: GestureDetector(
@@ -395,26 +383,36 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
         ),
         floatingActionButton: Container(
           margin: const EdgeInsets.only(bottom: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              _buildCircleButton(
-                icon: Icons.add,
-                label: 'ލިޔުން',
-                onPressed: _addText,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildCircleButton(
+                    icon: Icons.add,
+                    label: 'ލިޔުން',
+                    onPressed: _addText,
+                    heroTag: 'add_text',
+                  ),
+                  const SizedBox(width: 16),
+                  _buildCircleButton(
+                    icon: Icons.font_download,
+                    label: 'ފޮންޓް',
+                    onPressed: _changeTextFont,
+                    heroTag: 'change_font',
+                  ),
+                  const SizedBox(width: 16),
+                  _buildCircleButton(
+                    icon: Icons.color_lens,
+                    label: 'ކުލަ',
+                    onPressed: _changeTextColor,
+                    heroTag: 'change_color',
+                  ),
+                ],
               ),
-              const SizedBox(width: 16),
-              _buildCircleButton(
-                icon: Icons.font_download,
-                label: 'ފޮންޓް',
-                onPressed: _changeTextFont,
-              ),
-              const SizedBox(width: 16),
-              _buildCircleButton(
-                icon: Icons.color_lens,
-                label: 'ކުލަ',
-                onPressed: _changeTextColor,
-              ),
+              const SizedBox(height: 16),
+              _buildSaveButton(),
             ],
           ),
         ),
@@ -427,25 +425,87 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
     required IconData icon,
     required String label,
     required VoidCallback onPressed,
+    required String heroTag,
   }) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         FloatingActionButton(
+          heroTag: heroTag,
           backgroundColor: Colors.blue,
           onPressed: onPressed,
           child: Icon(icon, color: Colors.white),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         Text(
           label,
           style: TextStyle(
             fontFamily: 'MVAWaheed',
-            fontSize: 20,
+            fontSize: 16,
             color: Colors.grey[600],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildSaveButton() {
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return Container(
+          width: 200,
+          height: 50,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [
+                Color.fromARGB(255, 44, 142, 45),
+                Color.fromARGB(255, 86, 185, 91)
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: ElevatedButton(
+            onPressed: () async {
+              setState(() => _isSaving = true);
+              await _saveImage();
+              setState(() => _isSaving = false);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
+            ),
+            child: _isSaving
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.save_alt, color: Colors.white),
+                      SizedBox(width: 8),
+                      Text(
+                        'ފޮޓޯ ސޭވް ކޮށްލާ',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'MVAWaheed',
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+        );
+      },
     );
   }
 }
