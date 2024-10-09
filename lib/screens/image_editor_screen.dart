@@ -68,14 +68,26 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
         await _scanFile(filePath);
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Image saved to gallery')),
+          const SnackBar(
+            content: Text(
+              'ފޮޓޯ ގެލެރީއަށް ރައްކާކުރެވިއްޖެ',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontFamily: 'MVAWaheed', fontSize: 20),
+            ),
+          ),
         );
       } else {
-        throw Exception('Failed to capture image');
+        throw Exception('ފޮޓޯ ނެގުމުގައި މައްސަލަ ޖެހިއްޖެ');
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving image: ${e.toString()}')),
+        SnackBar(
+          content: Text(
+            'ފޮޓޯ ރައްކާކުރުމުގައި މައްސަލަ ޖެހިއްޖެ: ${e.toString()}',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontFamily: 'MVAWaheed', fontSize: 20),
+          ),
+        ),
       );
     }
   }
@@ -122,31 +134,73 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                final newText = textController.text.trim();
-                if (newText.isNotEmpty) {
-                  setState(() {
-                    if (index == null) {
-                      // Adding new text
-                      texts.add(CustomEditableText(
-                        text: newText,
-                        position: const Offset(100, 100),
-                        color: Colors.white,
-                        fontSize: 30,
-                        rotation: 0,
-                      ));
-                      activeTextIndex = texts.length - 1;
-                    } else {
-                      // Updating existing text
-                      texts[index].text = newText;
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    final newText = textController.text.trim();
+                    if (newText.isNotEmpty) {
+                      setState(() {
+                        if (index == null) {
+                          // Adding new text
+                          texts.add(CustomEditableText(
+                            text: newText,
+                            position: const Offset(100, 100),
+                            color: Colors.white,
+                            fontSize: 30,
+                            rotation: 0,
+                          ));
+                          activeTextIndex = texts.length - 1;
+                        } else {
+                          // Updating existing text
+                          texts[index].text = newText;
+                        }
+                      });
                     }
-                  });
-                }
-                Navigator.of(context).pop();
-              },
-              child: const Text('ރަނގަޅު',
-                  style: TextStyle(fontFamily: 'MVAWaheed')),
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.blue.withAlpha(30),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 24, vertical: 6),
+                    elevation: 0, // No elevation
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text(
+                    'ރަނގަޅު',
+                    style: TextStyle(
+                      fontFamily: 'MVAWaheed',
+                      fontSize: 20,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.red.withAlpha(30),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 24, vertical: 6),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text(
+                    'ކެންސަލް',
+                    style: TextStyle(
+                      fontFamily: 'MVAWaheed',
+                      fontSize: 20,
+                      color: Color.fromARGB(255, 202, 50, 39),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         );
@@ -178,7 +232,13 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
       _showColorPickerDialog(activeTextIndex!);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a text first')),
+        const SnackBar(
+          content: Text(
+            'ފުރަތަމަ ލިޔުމެއް ސެލެކްޓް ކުރޭ',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontFamily: 'MVAWaheed', fontSize: 20),
+          ),
+        ),
       );
     }
   }
@@ -188,7 +248,13 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
       _showFontSelectionDialog(activeTextIndex!);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a text first')),
+        const SnackBar(
+          content: Text(
+            'ފުރަތަމަ ލިޔުމެއް ސެލެކްޓް ކުރޭ',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontFamily: 'MVAWaheed', fontSize: 20),
+          ),
+        ),
       );
     }
   }
@@ -267,82 +333,93 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('Edit Image', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blue,
-        iconTheme: const IconThemeData(
-            color: Colors.white), // This changes the back button color to white
-        actions: [
-          if (activeTextIndex != null)
-            IconButton(
-              icon: const Icon(Icons.delete, color: Colors.white),
-              onPressed: _deleteSelectedText,
-            ),
-          IconButton(
-            icon: const Icon(Icons.save, color: Colors.white),
-            onPressed: _saveImage,
-          ),
-        ],
-      ),
-      body: GestureDetector(
-        onTap: () {
-          setState(() {
-            activeTextIndex = null;
-          });
-        },
-        child: Screenshot(
-          controller: screenshotController,
-          child: Stack(
-            children: [
-              Image.file(File(widget.imagePath)),
-              ...texts.asMap().entries.map((entry) {
-                final index = entry.key;
-                final text = entry.value;
-                return EditableTextWidget(
-                  key: ValueKey(text),
-                  text: text,
-                  isActive: index == activeTextIndex,
-                  onTap: () => _handleTextTap(index),
-                  onUpdate: (updatedText) {
-                    setState(() {
-                      texts[index] = updatedText;
-                      activeTextIndex = index;
-                    });
-                  },
-                );
-              }),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: Container(
-        margin: const EdgeInsets.only(bottom: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildCircleButton(
-              icon: Icons.color_lens,
-              label: 'ކުލަ',
-              onPressed: _changeTextColor,
-            ),
-            const SizedBox(width: 16),
-            _buildCircleButton(
-              icon: Icons.font_download,
-              label: 'ފޮންޓް',
-              onPressed: _changeTextFont,
-            ),
-            const SizedBox(width: 16),
-            _buildCircleButton(
-              icon: Icons.add,
-              label: 'ލިޔުން',
-              onPressed: _addText,
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: const Text('ފޮޓޯ އެޑިޓް ކުރުން',
+              style: TextStyle(color: Colors.white, fontFamily: 'MVAWaheed')),
+          backgroundColor: Colors.blue,
+          iconTheme: const IconThemeData(color: Colors.white),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Row(
+                children: [
+                  if (activeTextIndex != null)
+                    IconButton(
+                      icon: const Icon(Icons.delete_outlined,
+                          color: Colors.white),
+                      onPressed: _deleteSelectedText,
+                    ),
+                  IconButton(
+                    icon: const Icon(Icons.save_alt, color: Colors.white),
+                    onPressed: _saveImage,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
+        body: GestureDetector(
+          onTap: () {
+            setState(() {
+              activeTextIndex = null;
+            });
+          },
+          child: Screenshot(
+            controller: screenshotController,
+            child: Stack(
+              children: [
+                Image.file(File(widget.imagePath)),
+                ...texts.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final text = entry.value;
+                  return EditableTextWidget(
+                    key: ValueKey(text),
+                    text: text,
+                    isActive: index == activeTextIndex,
+                    onTap: () => _handleTextTap(index),
+                    onUpdate: (updatedText) {
+                      setState(() {
+                        texts[index] = updatedText;
+                        activeTextIndex = index;
+                      });
+                    },
+                  );
+                }),
+              ],
+            ),
+          ),
+        ),
+        floatingActionButton: Container(
+          margin: const EdgeInsets.only(bottom: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildCircleButton(
+                icon: Icons.add,
+                label: 'ލިޔުން',
+                onPressed: _addText,
+              ),
+              const SizedBox(width: 16),
+              _buildCircleButton(
+                icon: Icons.font_download,
+                label: 'ފޮންޓް',
+                onPressed: _changeTextFont,
+              ),
+              const SizedBox(width: 16),
+              _buildCircleButton(
+                icon: Icons.color_lens,
+                label: 'ކުލަ',
+                onPressed: _changeTextColor,
+              ),
+            ],
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -362,10 +439,10 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
         const SizedBox(height: 10),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'MVAWaheed',
             fontSize: 20,
-            color: Colors.blue,
+            color: Colors.grey[600],
           ),
         ),
       ],

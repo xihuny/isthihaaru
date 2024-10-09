@@ -14,12 +14,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Image Generator',
+      title: 'އިސްތިހާރު',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
+        fontFamily: 'MVAWaheed',
       ),
       home: const HomeScreen(),
+      builder: (context, child) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: child!,
+        );
+      },
     );
   }
 }
@@ -41,58 +48,100 @@ class HomeScreen extends StatelessWidget {
   }
 
   Future<void> _requestPermission(Permission permission) async {
-    final status = await permission.request();
-    print(status);
+    if (await permission.isDenied) {
+      await permission.request();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Isthihaaru',
-            style: const TextStyle(color: Colors.white)),
+        centerTitle: true,
+        title: const Text('އިސްތިހާރު', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton.icon(
+            GradientButton(
               onPressed: () async {
                 await _requestPermission(Permission.camera);
                 _pickImage(context, ImageSource.camera);
               },
-              icon: const Icon(Icons.camera_alt, color: Colors.white),
-              label: const Text('Capture Image',
-                  style: TextStyle(color: Colors.white)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
+              icon: Icons.camera_alt,
+              label: 'ފޮޓޯ ނަގާ',
+              gradient: const LinearGradient(
+                colors: [Colors.green, Colors.lightGreen],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton.icon(
+            GradientButton(
               onPressed: () async {
                 await _requestPermission(Permission.storage);
                 _pickImage(context, ImageSource.gallery);
               },
-              icon: const Icon(Icons.photo_library, color: Colors.white),
-              label: const Text('Choose Image',
-                  style: TextStyle(color: Colors.white)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orangeAccent,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
+              icon: Icons.photo_library,
+              label: 'ފޮޓޯ ހޯދާ',
+              gradient: const LinearGradient(
+                colors: [Colors.orange, Colors.deepOrange],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class GradientButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final IconData icon;
+  final String label;
+  final Gradient gradient;
+
+  const GradientButton({
+    Key? key,
+    required this.onPressed,
+    required this.icon,
+    required this.label,
+    required this.gradient,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200,
+      height: 200,
+      decoration: BoxDecoration(
+        gradient: gradient,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 60, color: Colors.white),
+              const SizedBox(height: 10),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
