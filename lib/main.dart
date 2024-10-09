@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
-        fontFamily: 'MVAWaheed',
+        fontFamily: 'mvtypewritersb_v1',
       ),
       home: const HomeScreen(),
       builder: (context, child) {

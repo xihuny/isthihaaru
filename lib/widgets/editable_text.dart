@@ -8,6 +8,7 @@ class CustomEditableText {
   double fontSize;
   double rotation;
   String fontFamily;
+  bool hasShadow;
 
   CustomEditableText({
     required this.text,
@@ -16,6 +17,7 @@ class CustomEditableText {
     required this.fontSize,
     required this.rotation,
     this.fontFamily = 'aammufkF',
+    this.hasShadow = false, // Changed from true to false
   });
 }
 
@@ -61,7 +63,6 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
         text: _text.text,
         style: TextStyle(
           fontSize: _text.fontSize,
-          fontFamily: 'MVAWaheed',
         ),
       ),
       maxLines: 1,
@@ -166,6 +167,15 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
                 color: _text.color,
                 fontSize: _text.fontSize,
                 fontFamily: _text.fontFamily,
+                shadows: _text.hasShadow
+                    ? [
+                        Shadow(
+                          blurRadius: 5.0,
+                          color: Colors.black.withOpacity(0.3),
+                          offset: const Offset(1.0, 1.0),
+                        ),
+                      ]
+                    : null,
               ),
             ),
           ),

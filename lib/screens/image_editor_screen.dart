@@ -21,6 +21,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
   int? activeTextIndex;
   ScreenshotController screenshotController = ScreenshotController();
   bool _isSaving = false;
+  bool _textShadowEnabled = true;
 
   void _addText() {
     _showEditDialog(null);
@@ -73,7 +74,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
             content: Text(
               'ފޮޓޯ ގެލެރީއަށް ރައްކާކުރެވިއްޖެ',
               textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'MVAWaheed', fontSize: 20),
+              style: TextStyle(fontSize: 20),
             ),
           ),
         );
@@ -86,7 +87,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
           content: Text(
             'ފޮޓޯ ރައްކާކުރުމުގައި މައްސަލަ ޖެހިއްޖެ: ${e.toString()}',
             textAlign: TextAlign.center,
-            style: const TextStyle(fontFamily: 'MVAWaheed', fontSize: 20),
+            style: const TextStyle(fontSize: 20),
           ),
         ),
       );
@@ -119,8 +120,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                   child: TextField(
                     controller: textController,
                     autofocus: true,
-                    style:
-                        const TextStyle(fontFamily: 'MVAWaheed', fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                     textAlign: TextAlign.center,
                     textDirection: TextDirection.rtl,
                     textAlignVertical: TextAlignVertical.center,
@@ -151,6 +151,8 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                             color: Colors.white,
                             fontSize: 30,
                             rotation: 0,
+                            hasShadow:
+                                false, // Explicitly set to false for new text
                           ));
                           activeTextIndex = texts.length - 1;
                         } else {
@@ -173,7 +175,6 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                   child: const Text(
                     'ރަނގަޅު',
                     style: TextStyle(
-                      fontFamily: 'MVAWaheed',
                       fontSize: 20,
                       color: Colors.blue,
                     ),
@@ -195,7 +196,6 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                   child: const Text(
                     'ކެންސަލް',
                     style: TextStyle(
-                      fontFamily: 'MVAWaheed',
                       fontSize: 20,
                       color: Color.fromARGB(255, 202, 50, 39),
                     ),
@@ -232,7 +232,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
           content: Text(
             'ފުރަތަމަ ލިޔުމެއް ސެލެކްޓް ކުރޭ',
             textAlign: TextAlign.center,
-            style: TextStyle(fontFamily: 'MVAWaheed', fontSize: 20),
+            style: TextStyle(fontSize: 20),
           ),
         ),
       );
@@ -248,7 +248,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
           content: Text(
             'ފުރަތަމަ ލިޔުމެއް ސެލެކްޓް ކުރޭ',
             textAlign: TextAlign.center,
-            style: TextStyle(fontFamily: 'MVAWaheed', fontSize: 20),
+            style: TextStyle(fontSize: 20),
           ),
         ),
       );
@@ -261,8 +261,11 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('ކުލަ ހޮވާ',
-              style: TextStyle(fontFamily: 'MVAWaheed')),
+          title: const Text(
+            'ކުލައެއް ސެލެކްޓް ކޮށްލާ',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.black54),
+          ),
           content: SingleChildScrollView(
             child: ColorPicker(
               pickerColor: currentColor,
@@ -278,10 +281,19 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('ނިންމާ',
-                  style: TextStyle(fontFamily: 'MVAWaheed')),
+            Center(
+              child: TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                style: ButtonStyle(
+                  backgroundColor:
+                      WidgetStateProperty.all(Colors.blue.withAlpha(25)),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Text('ކުލަ ބަދަލުކޮށްލާ',
+                      style: TextStyle(fontSize: 20, color: Colors.blue)),
+                ),
+              ),
             ),
           ],
         );
@@ -296,7 +308,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
         return AlertDialog(
           title: const Text(
             'ފޮންޓް ސެލެކްޓް ކޮށްލާ',
-            style: TextStyle(fontFamily: 'MVAWaheed'),
+            style: const TextStyle(color: Colors.black54),
             textAlign: TextAlign.center,
           ),
           content: SingleChildScrollView(
@@ -312,7 +324,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                 _buildFontListTile(index, 'FarumaV2', 'ފަރުމާ'),
                 _cutomDivider(),
                 _buildFontListTile(
-                    index, 'MageyHuseynu-Regular', 'މަގޭ ހުސޭނު'),
+                    index, 'MageyHuseynu-Regular', 'މަގެ ހުސޭނު'),
                 _cutomDivider(),
                 _buildFontListTile(index, 'MVBodu', 'އެމްވީ ބޮޑު'),
                 _cutomDivider(),
@@ -329,8 +341,8 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                 _buildFontListTile(
                     index, 'MvThakurufaanu', 'އެމްވީ ތަކުރުފާނު'),
                 _cutomDivider(),
-                _buildFontListTile(index, 'Mvizyanboduakuru3D-Bold',
-                    'އެމްވީ އިޒްޔަން ބޮޑުއަކުރު ތްރީޑީ'),
+                _buildFontListTile(
+                    index, 'Mvizyanboduakuru3D-Bold', 'އެމްވީ އިޒްޔަން ތްރީޑީ'),
                 _cutomDivider(),
                 _buildFontListTile(index, 'Mvlhohibold', 'އެމްވީ ޅޮހި ބޯލްޑް'),
                 _cutomDivider(),
@@ -369,6 +381,24 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
     );
   }
 
+  void _toggleTextShadow() {
+    if (activeTextIndex != null) {
+      setState(() {
+        texts[activeTextIndex!].hasShadow = !texts[activeTextIndex!].hasShadow;
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'ފުރަތަމަ ލިޔުމެއް ސެލެކްޓް ކުރޭ',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20),
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -378,7 +408,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text('ފޮޓޯ އެޑިޓް ކުރުން',
-              style: TextStyle(color: Colors.white, fontFamily: 'MVAWaheed')),
+              style: TextStyle(color: Colors.white)),
           backgroundColor: Colors.blue,
           iconTheme: const IconThemeData(color: Colors.white),
           actions: [
@@ -433,7 +463,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildCircleButton(
-                    icon: Icons.add,
+                    icon: Icons.text_fields,
                     label: 'ލިޔުން',
                     onPressed: _addText,
                     heroTag: 'add_text',
@@ -451,6 +481,16 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                     label: 'ކުލަ',
                     onPressed: _changeTextColor,
                     heroTag: 'change_color',
+                  ),
+                  const SizedBox(width: 16),
+                  _buildCircleButton(
+                    icon: activeTextIndex != null &&
+                            texts[activeTextIndex!].hasShadow
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    label: 'ހިޔަނި',
+                    onPressed: _toggleTextShadow,
+                    heroTag: 'toggle_shadow',
                   ),
                 ],
               ),
@@ -483,7 +523,6 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
         Text(
           label,
           style: TextStyle(
-            fontFamily: 'MVAWaheed',
             fontSize: 16,
             color: Colors.grey[600],
           ),
@@ -533,15 +572,18 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                   )
                 : const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(Icons.save_alt, color: Colors.white),
                       SizedBox(width: 8),
-                      Text(
-                        'ފޮޓޯ ސޭވް ކޮށްލާ',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'MVAWaheed',
-                          fontSize: 18,
+                      Padding(
+                        padding: EdgeInsets.only(top: 7, right: 5),
+                        child: Text(
+                          'ފޮޓޯ ސޭވް ކޮށްލާ',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
                         ),
                       ),
                     ],
