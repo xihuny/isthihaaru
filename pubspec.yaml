@@ -96,3 +96,45 @@ flutter:
     - family: MVAWaheed
       fonts:
         - asset: fonts/MVAWaheed.ttf
+    - family: aammufkF
+      fonts:
+        - asset: fonts/aammufkF.ttf
+    - family: AKRasmee
+      fonts:
+        - asset: fonts/AK Rasmee.ttf
+    - family: FarumaV2
+      fonts:
+        - asset: fonts/Faruma V2.0.ttf
+    - family: MageyHuseynu-Regular
+      fonts:
+        - asset: fonts/MageyHuseynu-Regular.ttf
+    - family: MVBodu
+      fonts:
+        - asset: fonts/MV Bodu.otf
+    - family: MvGaaLhohi
+      fonts:
+        - asset: fonts/Mv Gaa Lhohi.ttf
+    - family: MvIzyanboduakuru
+      fonts:
+        - asset: fonts/Mv Izyan bodu akuru.ttf
+    - family: MvIzyanSuruhee
+      fonts:
+        - asset: fonts/Mv Izyan Suruhee .ttf
+    - family: Mvsuruhee
+      fonts:
+        - asset: fonts/Mv suruhee.ttf
+    - family: MvThakurufaanu
+      fonts:
+        - asset: fonts/Mv Thakurufaanu.ttf
+    - family: Mvizyanboduakuru3D-Bold
+      fonts:
+        - asset: fonts/Mvizyanboduakuru3D-Bold.ttf
+    - family: Mvlhohibold
+      fonts:
+        - asset: fonts/Mvlhohi bold.ttf
+    - family: mvtypewritersb_v1
+      fonts:
+        - asset: fonts/mvtypewritersb_v1.1.ttf
+    - family: Randhoo_reg_hinted
+      fonts:
+        - asset: fonts/Randhoo_reg_hinted.ttf

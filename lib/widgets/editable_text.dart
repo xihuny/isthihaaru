@@ -15,7 +15,7 @@ class CustomEditableText {
     required this.color,
     required this.fontSize,
     required this.rotation,
-    this.fontFamily = 'MVAWaheed',
+    this.fontFamily = 'aammufkF',
   });
 }
 

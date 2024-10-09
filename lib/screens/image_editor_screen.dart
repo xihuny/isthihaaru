@@ -294,34 +294,77 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('ފޮންޓް ހޮވާ',
-              style: TextStyle(fontFamily: 'MVAWaheed')),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: const Text('MVAWaheed',
-                    style: TextStyle(fontFamily: 'MVAWaheed')),
-                onTap: () {
-                  setState(() {
-                    texts[index].fontFamily = 'MVAWaheed';
-                  });
-                  Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
-                title:
-                    const Text('Arial', style: TextStyle(fontFamily: 'Arial')),
-                onTap: () {
-                  setState(() {
-                    texts[index].fontFamily = 'Arial';
-                  });
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
+          title: const Text(
+            'ފޮންޓް ސެލެކްޓް ކޮށްލާ',
+            style: TextStyle(fontFamily: 'MVAWaheed'),
+            textAlign: TextAlign.center,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildFontListTile(index, 'MVAWaheed', 'އެމްވީ އޭ ވަހީދު'),
+                _cutomDivider(),
+                _buildFontListTile(index, 'aammufkF', 'އާއްމު އެފް ކޭ'),
+                _cutomDivider(),
+                _buildFontListTile(index, 'AKRasmee', 'އޭކޭ ރަސްމީ'),
+                _cutomDivider(),
+                _buildFontListTile(index, 'FarumaV2', 'ފަރުމާ'),
+                _cutomDivider(),
+                _buildFontListTile(
+                    index, 'MageyHuseynu-Regular', 'މަގޭ ހުސޭނު'),
+                _cutomDivider(),
+                _buildFontListTile(index, 'MVBodu', 'އެމްވީ ބޮޑު'),
+                _cutomDivider(),
+                _buildFontListTile(index, 'MvGaaLhohi', 'އެމްވީ ގާޅޮހި'),
+                _cutomDivider(),
+                _buildFontListTile(
+                    index, 'MvIzyanboduakuru', 'އެމްވީ އިޒްޔަން ބޮޑުއަކުރު'),
+                _cutomDivider(),
+                _buildFontListTile(
+                    index, 'MvIzyanSuruhee', 'އެމްވީ އިޒްޔަން ސުރުޚީ'),
+                _cutomDivider(),
+                _buildFontListTile(index, 'Mvsuruhee', 'އެމްވީ ސުރުޚީ'),
+                _cutomDivider(),
+                _buildFontListTile(
+                    index, 'MvThakurufaanu', 'އެމްވީ ތަކުރުފާނު'),
+                _cutomDivider(),
+                _buildFontListTile(index, 'Mvizyanboduakuru3D-Bold',
+                    'އެމްވީ އިޒްޔަން ބޮޑުއަކުރު ތްރީޑީ'),
+                _cutomDivider(),
+                _buildFontListTile(index, 'Mvlhohibold', 'އެމްވީ ޅޮހި ބޯލްޑް'),
+                _cutomDivider(),
+                _buildFontListTile(
+                    index, 'mvtypewritersb_v1', 'އެމްވީ ޓައިޕްރައިޓަރ'),
+                _cutomDivider(),
+                _buildFontListTile(
+                    index, 'Randhoo_reg_hinted', 'ރަންދޫ ރެގިއުލާ ހިންޓެޑް'),
+              ],
+            ),
           ),
         );
+      },
+    );
+  }
+
+  Widget _cutomDivider() {
+    return Divider(
+      height: 0.5,
+      color: Colors.black.withAlpha(15),
+    );
+  }
+
+  Widget _buildFontListTile(int index, String fontFamily, String fontName) {
+    return ListTile(
+      title: Text(
+        fontName,
+        style: TextStyle(fontFamily: fontFamily, fontSize: 25),
+      ),
+      onTap: () {
+        setState(() {
+          texts[index].fontFamily = fontFamily;
+        });
+        Navigator.of(context).pop();
       },
     );
   }
