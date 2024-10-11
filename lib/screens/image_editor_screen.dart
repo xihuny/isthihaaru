@@ -21,7 +21,6 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
   int? activeTextIndex;
   ScreenshotController screenshotController = ScreenshotController();
   bool _isSaving = false;
-  bool _textShadowEnabled = true;
 
   void _addText() {
     _showEditDialog(null);
