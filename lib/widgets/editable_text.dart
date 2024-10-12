@@ -23,14 +23,16 @@ class CustomEditableText {
 
 class EditableTextWidget extends StatefulWidget {
   final CustomEditableText text;
-  final VoidCallback onTap;
+  final Function(EditableTextWidget) onSelect;
+  final VoidCallback onEdit;
   final Function(CustomEditableText) onUpdate;
   final bool isActive;
 
   const EditableTextWidget({
     super.key,
     required this.text,
-    required this.onTap,
+    required this.onSelect,
+    required this.onEdit,
     required this.onUpdate,
     required this.isActive,
   });
@@ -49,6 +51,7 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
   bool _isDragging = false;
   static const double _snapAngle = math.pi / 2; // 90 degrees in radians
   static const double _snapThreshold = math.pi / 36; // 5 degrees in radians
+  static const int _minCharacters = 8;
 
   @override
   void initState() {
@@ -63,12 +66,31 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
         text: _text.text,
         style: TextStyle(
           fontSize: _text.fontSize,
+          fontFamily: _text.fontFamily,
         ),
       ),
       maxLines: 1,
       textDirection: TextDirection.ltr,
     )..layout(minWidth: 0, maxWidth: double.infinity);
-    _textSize = textPainter.size;
+
+    // Calculate the minimum width for 8 characters
+    final minWidthPainter = TextPainter(
+      text: TextSpan(
+        text: 'X' * _minCharacters,
+        style: TextStyle(
+          fontSize: _text.fontSize,
+          fontFamily: _text.fontFamily,
+        ),
+      ),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout(minWidth: 0, maxWidth: double.infinity);
+
+    // Use the larger of the two widths
+    _textSize = Size(
+      math.max(textPainter.width, minWidthPainter.width),
+      textPainter.height,
+    );
   }
 
   void _updateText() {
@@ -89,10 +111,26 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
     return normalizedRotation;
   }
 
+  void _handleTap() {
+    if (widget.isActive) {
+      // If already active, open edit dialog
+      widget.onEdit();
+    } else {
+      // If not active, select this text
+      widget.onSelect(widget);
+    }
+  }
+
+  void _handleInteraction() {
+    if (!widget.isActive) {
+      widget.onSelect(widget);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final horizontalPadding =
-        math.max(_minTouchAreaPadding, _textSize.width * 0.2);
+        math.max(_minTouchAreaPadding, _textSize.width * 0.1);
 
     return Positioned(
       left: _text.position.dx - horizontalPadding,
@@ -102,7 +140,7 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
         onTapDown: (_) => _isDragging = false,
         onTapUp: (_) {
           if (!_isDragging) {
-            widget.onTap();
+            _handleTap();
           }
         },
         onScaleStart: (details) {
@@ -110,6 +148,7 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
           _baseScaleFactor = _text.fontSize / 20;
           _baseRotation = _text.rotation;
           _lastFocalPoint = details.focalPoint;
+          _handleInteraction();
         },
         onScaleUpdate: (details) {
           setState(() {
@@ -150,6 +189,7 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
         child: Transform.rotate(
           angle: _text.rotation,
           child: Container(
+            width: _textSize.width + horizontalPadding * 2,
             padding: EdgeInsets.symmetric(
               horizontal: horizontalPadding,
               vertical: 0,

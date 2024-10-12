@@ -18,7 +18,7 @@ class ImageEditorScreen extends StatefulWidget {
 
 class _ImageEditorScreenState extends State<ImageEditorScreen> {
   List<CustomEditableText> texts = [];
-  int? activeTextIndex;
+  EditableTextWidget? activeTextWidget;
   ScreenshotController screenshotController = ScreenshotController();
   bool _isSaving = false;
 
@@ -153,7 +153,20 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                             hasShadow:
                                 false, // Explicitly set to false for new text
                           ));
-                          activeTextIndex = texts.length - 1;
+                          activeTextWidget = EditableTextWidget(
+                            text: texts.last,
+                            onSelect: _selectText,
+                            onEdit: () => _showEditDialog(texts.length - 1),
+                            onUpdate: (updatedText) {
+                              setState(() {
+                                int index = texts.indexOf(updatedText);
+                                if (index != -1) {
+                                  texts[index] = updatedText;
+                                }
+                              });
+                            },
+                            isActive: true,
+                          );
                         } else {
                           // Updating existing text
                           texts[index].text = newText;
@@ -208,23 +221,33 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
     );
   }
 
-  void _handleTextTap(int index) {
-    _showEditDialog(index);
+  void _selectText(EditableTextWidget selectedWidget) {
+    setState(() {
+      if (activeTextWidget != selectedWidget) {
+        activeTextWidget = selectedWidget;
+      } else if (activeTextWidget == selectedWidget) {
+        // If tapping the already active text, open edit dialog
+        _showEditDialog(texts.indexOf(selectedWidget.text));
+      }
+    });
   }
 
   void _deleteSelectedText() {
     debugPrint('delete');
-    if (activeTextIndex != null) {
+    if (activeTextWidget != null) {
       setState(() {
-        texts.removeAt(activeTextIndex!);
-        activeTextIndex = null;
+        int index = texts.indexOf(activeTextWidget!.text);
+        if (index != -1) {
+          texts.removeAt(index);
+          activeTextWidget = null;
+        }
       });
     }
   }
 
   void _changeTextColor() {
-    if (activeTextIndex != null) {
-      _showColorPickerDialog(activeTextIndex!);
+    if (activeTextWidget != null) {
+      _showColorPickerDialog(texts.indexOf(activeTextWidget!.text));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -239,8 +262,8 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
   }
 
   void _changeTextFont() {
-    if (activeTextIndex != null) {
-      _showFontSelectionDialog(activeTextIndex!);
+    if (activeTextWidget != null) {
+      _showFontSelectionDialog(texts.indexOf(activeTextWidget!.text));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -323,7 +346,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                 _buildFontListTile(index, 'FarumaV2', 'ފަރުމާ'),
                 _cutomDivider(),
                 _buildFontListTile(
-                    index, 'MageyHuseynu-Regular', 'މަގެ ހުސޭނު'),
+                    index, 'MageyHuseynu-Regular', 'މަސްބުން ހުސޭނު'),
                 _cutomDivider(),
                 _buildFontListTile(index, 'MVBodu', 'އެމްވީ ބޮޑު'),
                 _cutomDivider(),
@@ -381,9 +404,12 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
   }
 
   void _toggleTextShadow() {
-    if (activeTextIndex != null) {
+    if (activeTextWidget != null) {
       setState(() {
-        texts[activeTextIndex!].hasShadow = !texts[activeTextIndex!].hasShadow;
+        int index = texts.indexOf(activeTextWidget!.text);
+        if (index != -1) {
+          texts[index].hasShadow = !texts[index].hasShadow;
+        }
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -411,7 +437,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
           backgroundColor: Colors.blue,
           iconTheme: const IconThemeData(color: Colors.white),
           actions: [
-            if (activeTextIndex != null)
+            if (activeTextWidget != null)
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: IconButton(
@@ -424,8 +450,9 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
         ),
         body: GestureDetector(
           onTap: () {
+            // Deselect when tapping outside any text
             setState(() {
-              activeTextIndex = null;
+              activeTextWidget = null;
             });
           },
           child: Screenshot(
@@ -433,18 +460,19 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
             child: Stack(
               children: [
                 Image.file(File(widget.imagePath)),
-                ...texts.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final text = entry.value;
+                ...texts.map((text) {
                   return EditableTextWidget(
                     key: ValueKey(text),
                     text: text,
-                    isActive: index == activeTextIndex,
-                    onTap: () => _handleTextTap(index),
+                    isActive: activeTextWidget?.text == text,
+                    onSelect: _selectText,
+                    onEdit: () => _showEditDialog(texts.indexOf(text)),
                     onUpdate: (updatedText) {
                       setState(() {
-                        texts[index] = updatedText;
-                        activeTextIndex = index;
+                        int index = texts.indexOf(text);
+                        if (index != -1) {
+                          texts[index] = updatedText;
+                        }
                       });
                     },
                   );
@@ -483,8 +511,9 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                   ),
                   const SizedBox(width: 16),
                   _buildCircleButton(
-                    icon: activeTextIndex != null &&
-                            texts[activeTextIndex!].hasShadow
+                    icon: activeTextWidget != null &&
+                            texts[texts.indexOf(activeTextWidget!.text)]
+                                .hasShadow
                         ? Icons.visibility
                         : Icons.visibility_off,
                     label: 'ހިޔަނި',
