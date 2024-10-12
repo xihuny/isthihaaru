@@ -28,6 +28,14 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
 
   Future<void> _saveImage() async {
     try {
+      // Deselect all texts before saving
+      setState(() {
+        activeTextWidget = null;
+      });
+
+      // Wait for the next frame to ensure the UI has updated
+      await Future.delayed(Duration.zero);
+
       // Request storage permission
       var status = await Permission.storage.status;
       if (!status.isGranted) {
@@ -82,11 +90,11 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text(
-            'ފޮޓޯ ރައްކާކުރުމުގައި މައްސަލަ ޖެހިއްޖެ: ${e.toString()}',
+            'ފޮޓޯ ރައްކާކުރުމުގައި މައްސަލަ ޖެހިއްޖެ',
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 20),
           ),
         ),
       );
